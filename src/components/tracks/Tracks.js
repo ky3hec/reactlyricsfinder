@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Consumer } from "../../context";
+import Spinner from "../layout/Spinner";
 
 class Tracks extends Component {
   render() {
@@ -9,7 +10,7 @@ class Tracks extends Component {
           const { track_list } = value;
           console.log(track_list);
           if (track_list === undefined || track_list.length === 0) {
-            return <div>Spinner</div>;
+            return <Spinner />;
           } else {
             return (
               <div>
