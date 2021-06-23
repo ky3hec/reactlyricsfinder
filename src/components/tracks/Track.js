@@ -20,7 +20,7 @@ const Track = ({ track }) => {
             {track.album_name}
           </p>
           <Link
-            to={`lyrics/tracks/${track.track_id}`}
+            to={`/tracks/lyrics/${track.track_id}`}
             className="btn btn-dark btn-block"
           >
             <i className="fas fa-chevron-right"></i>View Lyrics

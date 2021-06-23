@@ -1,12 +1,18 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const morgan = require("morgan");
 module.exports = (app) => {
-  const PROXY_OBJECT = {
-    target: `${process.env.REACT_APP_BASE_URL}${process.env.REACT_APP_CHART_TRACKS_URL}`,
+  const ROOT_PATH = {
+    target: "https://api.musixmatch.com/ws/1.1/",
     changeOrigin: true,
+    pathRewrite: {
+      "^/tracks/lyrics/": "",
+    },
+    logLevel: "debug",
   };
+
   app.use(
-    `${process.env.REACT_APP_CHART_TRACKS_URL}`,
-    createProxyMiddleware(PROXY_OBJECT)
+    ["/chart.tracks.get?", "/tracks/lyrics/*", "/track.search?"],
+    createProxyMiddleware(ROOT_PATH)
   );
-  console.log(PROXY_OBJECT);
+  app.use(morgan("common"));
 };
