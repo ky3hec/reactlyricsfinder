@@ -4,6 +4,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+Before you start ask me for
+
+### `.env`
+
+file contents.
+
 In the project directory, you can run:
 
 ### `yarn start`
