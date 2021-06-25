@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { getTracksURL } from "./helpers/urlhelpers";
 
-const TRACKS_URL =
-  `${process.env.REACT_APP_CHART_TRACKS_GET}` +
-  `chart_name=top` +
-  "&page=1" +
-  "&page_size=10" +
-  "&country=us" +
-  "&f_has_lyrics=1" +
-  `&apikey=${process.env.REACT_APP_MM_KEY}`;
+const Context = React.createContext();
+
+const TRACKS_URL = getTracksURL();
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -24,7 +20,6 @@ const reducer = (state, action) => {
   }
 };
 
-const Context = React.createContext();
 export class Provider extends Component {
   constructor(props) {
     super(props);

@@ -3,6 +3,19 @@ import { Consumer } from "../../context";
 import Spinner from "../layout/Spinner";
 import Track from "./Track";
 
+export const Tracks1 = () => {};
+const TrackList = ({ trackList, heading }) => {
+  return (
+    <>
+      <h3 className="text-center mb-4">{heading}</h3>
+      <div className="row">
+        {trackList.map(({ track }) => (
+          <Track key={track.track_id} track={track} />
+        ))}
+      </div>
+    </>
+  );
+};
 class Tracks extends Component {
   render() {
     return (
@@ -12,16 +25,7 @@ class Tracks extends Component {
           if (track_list === undefined || track_list.length === 0) {
             return <Spinner />;
           } else {
-            return (
-              <>
-                <h3 className="text-center mb-4">{heading}</h3>
-                <div className="row">
-                  {track_list.map(({ track }) => (
-                    <Track key={track.track_id} track={track} />
-                  ))}
-                </div>
-              </>
-            );
+            return <TrackList trackList={track_list} heading={heading} />;
           }
         }}
       </Consumer>
