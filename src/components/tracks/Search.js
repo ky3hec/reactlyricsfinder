@@ -20,6 +20,7 @@ class Search extends Component {
   onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
+
   findTrack = (dispatch, e) => {
     e.preventDefault();
     axios
@@ -44,7 +45,7 @@ class Search extends Component {
           return (
             <div className="card card-body mb-4 p-4">
               <h1 className="display-4 text-center">
-                <i className="fas fa-music">Search For A Song</i>
+                Search For A Song <i className="fas fa-music" />
               </h1>
               <p className="lead text-center">Get the lyrics for any song</p>
               <form onSubmit={this.findTrack.bind(this, dispatch)}>
