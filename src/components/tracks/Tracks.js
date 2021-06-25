@@ -1,9 +1,8 @@
-import React, { Component } from "react";
-import { Consumer } from "../../context";
+import React from "react";
+import { useTracks } from "../../context";
 import Spinner from "../layout/Spinner";
 import Track from "./Track";
 
-export const Tracks1 = () => {};
 const TrackList = ({ trackList, heading }) => {
   return (
     <>
@@ -16,21 +15,15 @@ const TrackList = ({ trackList, heading }) => {
     </>
   );
 };
-class Tracks extends Component {
-  render() {
-    return (
-      <Consumer>
-        {(value) => {
-          const { track_list, heading } = value;
-          if (track_list === undefined || track_list.length === 0) {
-            return <Spinner />;
-          } else {
-            return <TrackList trackList={track_list} heading={heading} />;
-          }
-        }}
-      </Consumer>
-    );
+
+export const Tracks = () => {
+  const { track_list, heading } = useTracks();
+  debugger;
+  if (track_list === undefined || track_list.length === 0) {
+    return <Spinner />;
+  } else {
+    return <TrackList trackList={track_list} heading={heading} />;
   }
-}
+};
 
 export default Tracks;

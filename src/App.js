@@ -2,12 +2,12 @@ import "./App.css";
 import Navbar from "./components/layout/Navbar";
 import Index from "./components/layout/Index";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Provider } from "./context";
+import { TracksProvider } from "./context";
 import Lyrics from "./components/tracks/Lyrics";
 
 function App() {
   return (
-    <Provider>
+    <TracksProvider>
       <Router>
         <>
           <Navbar />
@@ -19,7 +19,7 @@ function App() {
           </div>
         </>
       </Router>
-    </Provider>
+    </TracksProvider>
   );
 }
 

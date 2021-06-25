@@ -1,15 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Consumer } from "../../context";
+import { getSearchURL } from "../../helpers/urlhelpers";
 
-function getSearchURL(trackTitle) {
-  return (
-    `${process.env.REACT_APP_TRACK_SEARCH}` +
-    `q_track=${trackTitle}` +
-    `&page_size=10&page=1&s_track_rating=desc` +
-    `&apikey=${process.env.REACT_APP_MM_KEY}`
-  );
-}
 class Search extends Component {
   constructor(props) {
     super(props);

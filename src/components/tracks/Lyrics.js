@@ -3,28 +3,11 @@ import Spinner from "../layout/Spinner";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
-
-function getLyricsURL(id) {
-  return (
-    // `${process.env.REACT_APP_MM_API_ROOT_URL}` +
-    `${process.env.REACT_APP_TRACK_LYRICS_GET}` +
-    `track_id=${id}&apikey=${process.env.REACT_APP_MM_KEY}`
-  );
-}
-
-function getTrackURL(id) {
-  return (
-    `${process.env.REACT_APP_TRACK_GET}` +
-    `track_id=${id}&apikey=${process.env.REACT_APP_MM_KEY}`
-  );
-}
-
-function getAlbumURL(id) {
-  return (
-    `${process.env.REACT_APP_ALBUM_GET}` +
-    `album_id=${id}&apikey=${process.env.REACT_APP_MM_KEY}`
-  );
-}
+import {
+  getLyricsURL,
+  getAlbumURL,
+  getTrackURL,
+} from "../../helpers/urlhelpers";
 
 class Lyrics extends Component {
   constructor(props) {
