@@ -9,6 +9,7 @@ export function getTracksURL() {
     `&apikey=${process.env.REACT_APP_MM_KEY}`
   );
 }
+
 export function getLyricsURL(id) {
   return (
     // `${process.env.REACT_APP_MM_API_ROOT_URL}` +
@@ -30,6 +31,7 @@ export function getAlbumURL(id) {
     `album_id=${id}&apikey=${process.env.REACT_APP_MM_KEY}`
   );
 }
+
 export function getSearchURL(trackTitle) {
   return (
     `${process.env.REACT_APP_TRACK_SEARCH}` +
