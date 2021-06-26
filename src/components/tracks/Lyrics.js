@@ -24,7 +24,7 @@ const LyricsCardHeader = ({ trackName, artistName }) => {
 const LyricsCardBody = ({ lyricsBody }) => {
   return (
     <div className="card-body">
-      <p className="card-text">{lyricsBody}</p>
+      <pre className="pre-scrollable">{lyricsBody}</pre>
     </div>
   );
 };
@@ -55,8 +55,13 @@ const Lyrics = () => {
       .get(getLyricsURL(TRACK_ID))
       .then((res) => {
         setLyrics(res.data.message.body.lyrics.lyrics_body);
-        return axios.get(getTrackURL(TRACK_ID));
       })
+      .catch((error) => console.error(error));
+  }, [TRACK_ID]);
+
+  useEffect(() => {
+    axios
+      .get(getTrackURL(TRACK_ID))
       .then((res) => {
         const { track } = res.data.message.body;
         setTrackName(track.track_name);
@@ -67,11 +72,11 @@ const Lyrics = () => {
       })
       .then((res) => {
         const { album } = res.data.message.body;
+        console.log(album);
         const music_genre =
-          album.primary_genres.music_genre_list.length > 0
+          album.primary_genres?.music_genre_list.length > 0
             ? album.primary_genres.music_genre_list[0]
             : {};
-
         const genre =
           Object.keys(music_genre).length > 0
             ? music_genre?.music_genre?.music_genre_name
@@ -81,16 +86,8 @@ const Lyrics = () => {
         setLoaded(true);
       })
       .catch((error) => console.error(error));
-  }, [
-    TRACK_ID,
-    trackName,
-    artistName,
-    albumId,
-    explicit,
-    genre,
-    lyrics,
-    releaseDate,
-  ]);
+  }, [TRACK_ID]);
+
   if (!loaded) {
     return <Spinner />;
   } else {

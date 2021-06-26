@@ -4,7 +4,6 @@ import { getTracksURL } from "./helpers/urlhelpers";
 
 const TRACKS_URL = getTracksURL();
 const TracksContext = React.createContext();
-const SEARCH = "SEARCH_TRACKS";
 const LOAD = "LOAD_TRACKS";
 
 export const useTracks = () => {
@@ -13,18 +12,11 @@ export const useTracks = () => {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case SEARCH: {
-      return {
-        ...state,
-        track_list: action.payload,
-        heading: "Search Results",
-      };
-    }
     case LOAD:
       return {
         ...state,
         track_list: action.payload,
-        heading: "Top 10 tracks",
+        heading: action.heading,
       };
     default:
       return state;
@@ -38,13 +30,13 @@ const initialState = {
 
 export const TracksProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const search = (payload) => dispatch({ type: SEARCH, payload: payload });
-  const load = (payload) => dispatch({ type: LOAD, payload: payload });
+  const loadTracks = (payload, heading) =>
+    dispatch({ type: LOAD, payload: payload, heading: heading });
   useEffect(() => {
     axios
       .get(TRACKS_URL)
       .then((res) => {
-        load(res.data.message.body.track_list);
+        loadTracks(res.data.message.body.track_list, "Top 10 Tracks");
       })
       .catch((error) => console.error(error));
   }, []);
@@ -54,31 +46,10 @@ export const TracksProvider = ({ children }) => {
       value={{
         track_list: state.track_list,
         heading: state.heading,
-        search,
-        load,
+        loadTracks,
       }}
     >
       {children}
     </TracksContext.Provider>
   );
 };
-// export class Provider extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       track_list: [],
-//       heading: "Top 10 tracks",
-//       dispatch: (action) => this.setState((state) => reducer(state, action)),
-//     };
-//   }
-
-//   componentDidMount() {}
-//   render() {
-//     return (
-//       <Context.Provider value={this.state}>
-//         {this.props.children}
-//       </Context.Provider>
-//     );
-//   }
-// }
-// export const Consumer = Context.Consumer;
