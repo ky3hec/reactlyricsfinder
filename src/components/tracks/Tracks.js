@@ -18,7 +18,6 @@ const TrackList = ({ trackList, heading }) => {
 
 export const Tracks = () => {
   const { track_list, heading } = useTracks();
-  debugger;
   if (track_list === undefined || track_list.length === 0) {
     return <Spinner />;
   } else {

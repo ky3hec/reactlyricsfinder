@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import Spinner from "../layout/Spinner";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Moment from "react-moment";
 import {
   getLyricsURL,
@@ -9,95 +9,114 @@ import {
   getTrackURL,
 } from "../../helpers/urlhelpers";
 
-class Lyrics extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      track: {},
-      lyrics: {},
-      album: {},
-    };
-  }
+const LyricsCard = ({ children }) => {
+  return <div className="card">{children}</div>;
+};
 
-  render() {
-    const { track, lyrics, album } = this.state;
+const LyricsCardHeader = ({ trackName, artistName }) => {
+  return (
+    <h5 className="card-header">
+      {trackName} by <span className="text-secondary">{artistName}</span>
+    </h5>
+  );
+};
 
-    if (
-      track === undefined ||
-      lyrics === undefined ||
-      Object.keys(track).length === 0 ||
-      Object.keys(lyrics).length === 0 ||
-      Object.keys(album).length === 0
-    ) {
-      return <Spinner />;
-    } else {
-      const music_genre =
-        album.primary_genres.music_genre_list.length > 0
-          ? album.primary_genres.music_genre_list[0]
-          : {};
+const LyricsCardBody = ({ lyricsBody }) => {
+  return (
+    <div className="card-body">
+      <p className="card-text">{lyricsBody}</p>
+    </div>
+  );
+};
 
-      const genre =
-        Object.keys(music_genre).length > 0
-          ? music_genre?.music_genre?.music_genre_name
-          : null;
+const LyricsDetail = ({ children }) => {
+  return <ul className="list-group mt-4">{children}</ul>;
+};
+const LyricsDetailItem = ({ label = "empty", data = null }) => {
+  return (
+    <li className="list-group-item">
+      <strong>{label}</strong>: {data}
+    </li>
+  );
+};
 
-      return (
-        <>
-          <Link to="/" className="btn btn-dark btn-sm mb-4">
-            Go back
-          </Link>
-          <div className="card">
-            <h5 className="card-header">
-              {track.track_name} by{" "}
-              <span className="text-secondary">{track.artist_name}</span>
-            </h5>
-            <div className="card-body">
-              <p className="card-text">{lyrics.lyrics_body}</p>
-            </div>
-          </div>
-          <ul className="list-group mt-4">
-            <li className="list-group-item">
-              <strong>Album ID</strong>: {track.album_id}
-            </li>
-            <li className="list-group-item">
-              <strong>Song Genre</strong>: {genre}
-            </li>
-            <li className="list-group-item">
-              <strong>Explicit words</strong>:{" "}
-              {track.explicit === 0 ? "No" : "Yes"}
-            </li>
-            <li className="list-group-item">
-              <strong>Release Date</strong>:
-              <Moment format="MM/DD/YYYY">{album.album_release_date}</Moment>
-            </li>
-          </ul>
-        </>
-      );
-    }
-  }
-  componentDidMount() {
-    const TRACK_ID = this.props.match.params.id;
+const Lyrics = () => {
+  const [trackName, setTrackName] = useState("");
+  const [artistName, setArtistName] = useState("");
+  const [albumId, setAlbumId] = useState("");
+  const [releaseDate, setReleaseDate] = useState("");
+  const [explicit, setExplicit] = useState(false);
+  const [lyrics, setLyrics] = useState("");
+  const [genre, setGenre] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const { id: TRACK_ID } = useParams();
+  useEffect(() => {
     axios
       .get(getLyricsURL(TRACK_ID))
       .then((res) => {
-        this.setState({
-          lyrics: res.data.message.body.lyrics,
-        });
+        setLyrics(res.data.message.body.lyrics.lyrics_body);
         return axios.get(getTrackURL(TRACK_ID));
       })
       .then((res) => {
-        this.setState({
-          track: res.data.message.body.track,
-        });
-        return axios.get(getAlbumURL(res.data.message.body.track.album_id));
+        const { track } = res.data.message.body;
+        setTrackName(track.track_name);
+        setArtistName(track.artist_name);
+        setExplicit(track.explicit);
+        setAlbumId(track.album_id);
+        return axios.get(getAlbumURL(track.album_id));
       })
       .then((res) => {
-        this.setState({
-          album: res.data.message.body.album,
-        });
-        console.log(res.data.message.body.album);
+        const { album } = res.data.message.body;
+        const music_genre =
+          album.primary_genres.music_genre_list.length > 0
+            ? album.primary_genres.music_genre_list[0]
+            : {};
+
+        const genre =
+          Object.keys(music_genre).length > 0
+            ? music_genre?.music_genre?.music_genre_name
+            : null;
+        setGenre(genre);
+        setReleaseDate(album.album_release_date);
+        setLoaded(true);
       })
       .catch((error) => console.error(error));
+  }, [
+    TRACK_ID,
+    trackName,
+    artistName,
+    albumId,
+    explicit,
+    genre,
+    lyrics,
+    releaseDate,
+  ]);
+  if (!loaded) {
+    return <Spinner />;
+  } else {
+    return (
+      <>
+        <Link to="/" className="btn btn-dark btn-sm mb-4">
+          Go back
+        </Link>
+        <LyricsCard>
+          <LyricsCardHeader trackName={trackName} artistName={artistName} />
+          <LyricsCardBody lyricsBody={lyrics} />
+        </LyricsCard>
+        <LyricsDetail>
+          <LyricsDetailItem label="Album ID" data={albumId} />
+          <LyricsDetailItem label="Song Genre" data={genre} />
+          <LyricsDetailItem
+            label="Explicit words"
+            data={explicit === 0 ? "No" : "Yes"}
+          />
+          <LyricsDetailItem
+            label="Release Date"
+            data={<Moment format="MM/DD/YYYY">{releaseDate}</Moment>}
+          />
+        </LyricsDetail>
+      </>
+    );
   }
-}
+};
 export default Lyrics;
