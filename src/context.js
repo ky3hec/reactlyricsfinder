@@ -4,10 +4,22 @@ import { getTracksURL } from "./helpers/urlhelpers";
 
 const TRACKS_URL = getTracksURL();
 const TracksContext = React.createContext();
+const TracksDispatch = React.createContext();
 const LOAD = "LOAD_TRACKS";
 
-export const useTracks = () => {
-  return useContext(TracksContext);
+export const useTracksState = () => {
+  const context = useContext(TracksContext);
+  if (context === undefined) {
+    throw new Error("useTracksState must be used within TracksProvider");
+  }
+  return context;
+};
+export const useTracksDispatch = () => {
+  const context = useContext(TracksDispatch);
+  if (context === undefined) {
+    throw new Error("");
+  }
+  return context;
 };
 
 const reducer = (state, action) => {
@@ -42,14 +54,10 @@ export const TracksProvider = ({ children }) => {
   }, []);
 
   return (
-    <TracksContext.Provider
-      value={{
-        track_list: state.track_list,
-        heading: state.heading,
-        loadTracks,
-      }}
-    >
-      {children}
+    <TracksContext.Provider value={state}>
+      <TracksDispatch.Provider value={loadTracks}>
+        {children}
+      </TracksDispatch.Provider>
     </TracksContext.Provider>
   );
 };

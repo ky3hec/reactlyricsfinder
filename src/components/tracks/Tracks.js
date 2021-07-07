@@ -1,5 +1,5 @@
 import React from "react";
-import { useTracks } from "../../context";
+import { useTracksState } from "../../context";
 import Spinner from "../layout/Spinner";
 import Track from "./Track";
 
@@ -17,7 +17,7 @@ const TrackList = ({ trackList, heading }) => {
 };
 
 export const Tracks = () => {
-  const { track_list, heading } = useTracks();
+  const { track_list, heading } = useTracksState();
   if (track_list === undefined || track_list.length === 0) {
     return <Spinner />;
   } else {

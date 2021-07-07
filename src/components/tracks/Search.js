@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useTracks } from "../../context";
+import { useTracksDispatch } from "../../context";
 import { getSearchURL } from "../../helpers/urlhelpers";
 
 const Search = () => {
   const [trackTitle, setTrackTitle] = useState("");
-  const { loadTracks } = useTracks();
+  const { loadTracks } = useTracksDispatch();
 
   const submitHandler = (loadTracks, e) => {
     e.preventDefault();
