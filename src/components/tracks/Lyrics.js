@@ -72,7 +72,6 @@ const Lyrics = () => {
       })
       .then((res) => {
         const { album } = res.data.message.body;
-        console.log(album);
         const music_genre =
           album.primary_genres?.music_genre_list.length > 0
             ? album.primary_genres.music_genre_list[0]

@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useImperativeHandle } from "react";
 import axios from "axios";
 import { useTracksDispatch } from "../../context";
 import { getSearchURL } from "../../helpers/urlhelpers";
 
-const Search = () => {
+function Search(props, ref) {
   const [trackTitle, setTrackTitle] = useState("");
-  const { loadTracks } = useTracksDispatch();
+  const loadTracks = useTracksDispatch();
+  const tracksRef = useRef();
+
+  function focusOnForm() {
+    if (tracksRef.current) {
+      tracksRef.current.focus();
+    }
+  }
+  useImperativeHandle(ref, () => {
+    return { focusOnForm: focusOnForm };
+  });
 
   const submitHandler = (loadTracks, e) => {
     e.preventDefault();
@@ -34,6 +44,7 @@ const Search = () => {
             placeholder="Song title..."
             value={trackTitle}
             onChange={(e) => setTrackTitle(e.target.value)}
+            ref={tracksRef}
           />
           <button
             className="btn form-control btn-lg btn-primary mb-5"
@@ -45,6 +56,6 @@ const Search = () => {
       </form>
     </div>
   );
-};
+}
 
-export default Search;
+export default React.forwardRef(Search);
